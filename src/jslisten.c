@@ -54,7 +54,7 @@
 #define MYPROGNAME "jslisten"
 #define myConfFile "/.jslisten"
 #define myGlConfFile "/etc/jslisten.cfg"
-//#define MY_LOG_LEVEL LOG_NOTICE //LOG_DEBUG //LOG_NOTICE
+#define MY_LOG_LEVEL LOG_DEBUG //LOG_NOTICE
 
 #define INI_BUFFERSIZE      512
 #define MAX_HOTKEYS 99
@@ -222,20 +222,27 @@ int checkButtonPressed(struct js_event js) {
   int section = -1;
   int i;
   // Update the button press in all key combinations
+  //printf("%d %d %d %d\n", myKeys[0].button1, myKeys[0].button2, myKeys[0].button3, myKeys[0].button4);
   for (i=0; i<numHotkeys; i++) {
-    if ( js.number == myKeys[i].button1 ) {
-      myKeys[i].button1Active = js.value;
+    if (!myKeys[i].button1Active && (js.number == myKeys[i].button1) && (js.value == 1)) {
+      myKeys[i].button1Active = 1;
+      //printf("button 1 triggered\n");
     }
-    if ( js.number == myKeys[i].button2 ) {
-      myKeys[i].button2Active = js.value;
+    if (myKeys[i].button1Active && !myKeys[i].button2Active && (js.number == myKeys[i].button2) && (js.value == 1)) {
+      myKeys[i].button2Active = 1;
+      //printf("button 2 triggered\n");
     }
-    if ( js.number == myKeys[i].button3 ) {
-      myKeys[i].button3Active = js.value;
+    if (myKeys[i].button1Active && myKeys[i].button2Active && !myKeys[i].button3Active && (js.number == myKeys[i].button3) && (js.value == 1)) {
+      myKeys[i].button3Active = 1;
+      //printf("button 3 triggered\n");
     }
-    if ( js.number == myKeys[i].button4 ) {
-      myKeys[i].button4Active = js.value;
+    if (myKeys[i].button1Active && myKeys[i].button2Active && myKeys[i].button3Active && !myKeys[i].button4Active && (js.number == myKeys[i].button4) && (js.value == 1)) {
+      myKeys[i].button4Active = 1;
+      //printf("button 4 triggered\n");
     }
   }
+
+  //printf("%d %d %d\n", js.number, js.value, myKeys[0].activeButtons);
   // Analyse combinations
   for (i=0; i<numHotkeys; i++) {
     switch (myKeys[i].activeButtons) {
